@@ -1,9 +1,7 @@
 # White Flower Animation
 
-<p align="center">
-<img src="assets/white-flower-preview.gif" alt="White Flower Animation preview" width="360">
-</p> <h3 align="center">A flower that feels alive.</h3> <p align="center">
-  A cinematic Python animation with luminous petals, floating particles,
+<h3 align="center">A flower that feels alive.</h3> <p align="center">
+A cinematic Python animation with luminous petals, floating particles,
   breathing light, and a soft water reflection.
 </p> <p align="center">
   <a href="https://github.com/Sarcasticzain/White-Flower/stargazers">
@@ -13,7 +11,9 @@
     <img src="https://img.shields.io/github/license/Sarcasticzain/White-Flower?style=for-the-badge&color=ffffff&labelColor=111111" alt="MIT License">
   </a>
   <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.9 or newer">
-</p>
+</p> <p align="center">
+  <img src="assets/white-flower-preview.gif" alt="White Flower Animation preview" width="420">
+</p> <p align="center"><em>A still image, brought gently to life.</em></p>
 
 ---
 
@@ -44,14 +44,6 @@ create atmospheric visual art—not just scripts and utilities.
 - **Custom image support** — use your own flower or nature photograph
 
 - **Screenshot capture** — press `S` to save the current scene
-
-## Preview
-
-<p align="center">
-<img src="assets/white-flower-preview.gif" alt="Animated preview of the White Flower project" width="360">
-</p>
-
-> Run the project locally to experience the full interactive animation.
 
 ## Built With
 
