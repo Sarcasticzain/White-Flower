@@ -1,153 +1,106 @@
-# White Flower Animation
+"""White Flower Animation: a glowing flower with rippling water and floating lights.
+drifting light particles and twinkling sparkles.
+  pip install pygame-ce numpy pillow
+  python "White Flower.py"        (keep flower.jpg in the same folder)
+ESC quits, S saves a screenshot."""
+import math, numpy as np, pygame
+from PIL import Image, ImageFilter
 
-A beautiful interactive white flower animation built with Python, Pygame, NumPy,
-and Pillow. The flower gently breathes, glows in the dark, reflects in rippling
-water, and releases tiny floating lights from its petals.
+IMG_H = 760                      # flower height on screen; lower it for a smaller window
+MARGIN = 90                      # extra black space around the flower for particles
+rng = np.random.default_rng(5)
 
-## Features
-
-- Soft breathing glow effect
-
-- Rippling water reflection
-
-- Floating light particles from the flower
-
-- Twinkling background sparkles
-
-- Smooth animated zoom effect
-
-- Screenshot support
-
-- Custom flower image support
-
-## Project Files
-
-- `White Flower.py` – the main animation program
-
-- `flower.jpg` – the flower image used by the animation
-
-- `white_flower_shot.png` – screenshot created when you press **S**
-
-## Requirements
-
-- Python 3.9 or newer
-
-- Pygame Community Edition
-
-- NumPy
-
-- Pillow
-
-## Installation
-
-Open a terminal inside the `White-Flower` folder and run:
-
-```bash
-python -m pip install --upgrade pip
-python -m pip install pygame-ce numpy pillow
-```
-
-> Use `pygame-ce` instead of `pygame`. It works more reliably with newer Python
-versions, especially on Windows.
-
-## How to Run
-
-Open a terminal in the folder that contains `White Flower.py`, then run:
-
-```bash
-python "White Flower.py"
-```
-
-### Controls
-
-- Press **ESC** to close the animation
-
-- Press **S** to save a screenshot
-
-## Use Your Own Flower Image
-
-You can replace the default image with your own flower photograph:
-
-1. Choose a JPG or PNG flower image. A portrait image with a dark background
-usually gives the best result.
-
-1. Rename the image to `flower.jpg`.
-
-1. Place it in the same folder as `White Flower.py`.
-
-1. Replace the existing `flower.jpg` file.
-
-1. Run the program again.
-
-For a PNG image, update this line in `White Flower.py`:
-
-```python
+# ---------- load + prepare the picture ----------
 im = Image.open("flower.jpg").convert("RGB")
-```
+iw = int(im.width * IMG_H / im.height)
+im = im.resize((iw, IMG_H), Image.LANCZOS)
+CW, CH = iw + 2 * MARGIN, IMG_H + 2 * MARGIN
+canvas = np.zeros((CH, CW, 3), np.float32)
+canvas[MARGIN:MARGIN + IMG_H, MARGIN:MARGIN + iw] = np.asarray(im, np.float32)
+# feather the picture's edges into the black margin so no box is visible
+fx = np.clip(np.minimum(np.arange(CW) - MARGIN, CW - MARGIN - 1 - np.arange(CW)) / 45.0, 0, 1)
+fy = np.clip(np.minimum(np.arange(CH) - MARGIN, CH - MARGIN - 1 - np.arange(CH)) / 45.0, 0, 1)
+canvas *= (fy[:, None] * fx[None, :])[..., None]
+lum = canvas.mean(2) / 255
 
-Change it to:
+# soft glow = blurred bright parts; pulsed on and off to make the flower "breathe"
+bright = np.where(lum[..., None] > 0.55, canvas, 0).astype(np.uint8)
+glow = np.asarray(Image.fromarray(bright).filter(ImageFilter.GaussianBlur(16)), np.float32)
 
-```python
-im = Image.open("flower.png").convert("RGB")
-```
+# water ripples only affect the lower part of the picture (the reflection)
+WATER_Y0 = MARGIN + int(IMG_H * 0.80)
+water_rows = np.arange(WATER_Y0, CH - MARGIN)
+water_depth = (water_rows - WATER_Y0) / max(1, len(water_rows) - 1)
+cols = np.arange(CW)
 
-Bright backgrounds may reduce the glow effect. Dark or black backgrounds make
-the white flower and floating lights stand out more clearly.
+# ---------- particles that float up off the bright petals ----------
+N = 3500
+ys, xs = np.nonzero(lum[:CH - MARGIN - int(IMG_H * 0.2)] > 0.6)   # not from the water
+pick = rng.integers(0, len(ys), N)
+SX, SY = xs[pick].astype(np.float32), ys[pick].astype(np.float32)
+SCOL = canvas[ys[pick], xs[pick]]
+SCOL = np.clip(SCOL * 1.3 + 40, 0, 255)
+life = rng.random(N).astype(np.float32)
+speed = rng.uniform(0.0015, 0.005, N).astype(np.float32)
+rise = rng.uniform(30, 150, N).astype(np.float32)
+sway = rng.uniform(0, 6.28, N).astype(np.float32)
 
-## Customization
+# background twinkles
+S = 90
+TX, TY = rng.uniform(0, CW, S), rng.uniform(0, CH * 0.8, S)
+TPH = rng.uniform(0, 6.28, S)
 
-You can adjust these settings near the top of `White Flower.py`:
+pygame.init()
+screen = pygame.display.set_mode((CW, CH))
+pygame.display.set_caption("White Flower Animation")
+clock = pygame.time.Clock()
+surf = pygame.Surface((CW, CH))
+t = 0.0
+running = True
+while running:
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
+            running = False
+        if e.type == pygame.KEYDOWN and e.key == pygame.K_s:
+            pygame.image.save(screen, "white_flower_shot.png")
+    t += 0.035
 
-| Setting | What it changes |
-| --- | --- |
-| `IMG_H = 760` | Flower height and window size |
-| `N = 3500` | Number of floating light particles |
-| `WATER_Y0` | Position where the water reflection begins |
-| `0.14 + 0.12 * math.sin(...)` | Strength of the breathing glow |
-| `3.2 * np.sin(...)` | Size of the water ripples |
-| `pygame.display.set_caption(...)` | Animation window title |
+    frame = canvas.copy()
 
-For a faster animation on a slower computer, reduce these values:
+    # 1) rippling water: shift each row sideways by a moving sine wave
+    shift = (3.2 * np.sin(water_rows * 0.13 + t * 2.2) * (0.3 + water_depth)).astype(int)
+    idx = np.clip(cols[None, :] + shift[:, None], 0, CW - 1)
+    frame[WATER_Y0:CH - MARGIN] = canvas[WATER_Y0:CH - MARGIN][np.arange(len(water_rows))[:, None], idx]
 
-```python
-IMG_H = 600
-N = 1500
-```
+    # 2) breathing glow: bright parts bloom and fade
+    frame += glow * (0.14 + 0.12 * math.sin(t * 1.1))
 
-## Troubleshooting
+    # 3) light particles rising and fading
+    life += speed
+    dead = life >= 1
+    life[dead] = 0
+    ph = np.sin(life * math.pi)                                   # fade in then out
+    px = SX + np.sin(t * 1.3 + sway) * 6 + life * 10
+    py = SY - life * rise
+    ok = (px > 1) & (px < CW - 2) & (py > 1) & (py < CH - 2)
+    xi, yi = px[ok].astype(int), py[ok].astype(int)
+    c = SCOL[ok] * (ph[ok] * 0.9)[:, None]
+    for dx, dy, w in ((0, 0, 1.0), (1, 0, .4), (-1, 0, .4), (0, 1, .4), (0, -1, .4)):
+        np.add.at(frame, (yi + dy, xi + dx), c * w)
 
-### `ModuleNotFoundError`
+    # 4) twinkling sparkles
+    b = np.clip(120 + 130 * np.sin(t * 3 + TPH), 0, 255)
+    sx, sy = TX.astype(int), TY.astype(int)
+    for dx, dy, w in ((0, 0, 1), (1, 0, .5), (-1, 0, .5), (0, 1, .5), (0, -1, .5)):
+        frame[sy + dy, sx + dx] += (b * w)[:, None]
 
-Install the required packages again:
+    frame = np.clip(frame, 0, 255).astype(np.uint8)
 
-```bash
-python -m pip install pygame-ce numpy pillow
-```
-
-### `FileNotFoundError: flower.jpg`
-
-Make sure `flower.jpg` is in the same folder as `White Flower.py`, and run the
-command from that folder.
-
-### The animation is choppy
-
-Lower the image height and particle count:
-
-```python
-IMG_H = 600
-N = 1500
-```
-
-### The window is too tall
-
-Reduce `IMG_H` to `600` or `500`.
-
-## License
-
-The source code in this project is available under the [MIT License](LICENSE).
-You are free to use, copy, modify, and share the code, as long as the license
-notice is included.
-
-The `flower.jpg` image may have separate copyright or usage rules. Only upload
-an image that you created yourself, have permission to use, or downloaded from
-a source that allows redistribution.
+    # 5) breathing zoom: crop a hair inward then scale back up
+    m = int(2 + 5 * (0.5 + 0.5 * math.sin(t * 1.1)))              # 2..7 px
+    pygame.surfarray.blit_array(surf, frame.transpose(1, 0, 2))
+    crop = surf.subsurface((m, m, CW - 2 * m, CH - 2 * m)) if hasattr(surf, "subsurface") else surf
+    screen.blit(pygame.transform.smoothscale(crop, (CW, CH)), (0, 0))
+    pygame.display.flip()
+    clock.tick(60)
+pygame.quit()
