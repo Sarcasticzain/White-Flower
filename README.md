@@ -1,62 +1,100 @@
 # White Flower Animation
 
-A beautiful interactive white flower animation built with Python, Pygame, NumPy,
-and Pillow. The flower gently breathes, glows in the dark, reflects in rippling
-water, and releases tiny floating lights from its petals.
+<p align="center">
+<img src="assets/white-flower-preview.gif" alt="White Flower Animation preview" width="360">
+</p> <h3 align="center">A flower that feels alive.</h3> <p align="center">
+  A cinematic Python animation with luminous petals, floating particles,
+  breathing light, and a soft water reflection.
+</p> <p align="center">
+  <a href="https://github.com/Sarcasticzain/White-Flower/stargazers">
+    <img src="https://img.shields.io/github/stars/Sarcasticzain/White-Flower?style=for-the-badge&color=f5c542&labelColor=111111" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/Sarcasticzain/White-Flower/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Sarcasticzain/White-Flower?style=for-the-badge&color=ffffff&labelColor=111111" alt="MIT License">
+  </a>
+  <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.9 or newer">
+</p>
 
-![White Flower Animation Preview](https://private-us-east-1.manuscdn.com/sessionFile/upNEhZ2AWzAkueX0rew3Yn/sandbox/LbXPNTSZuA0MJL6NSgL4u4-images_1791705979559_na1fn_L2hvbWUvdWJ1bnR1L1doaXRlLUZsb3dlci9hc3NldHMvd2hpdGUtZmxvd2VyLXByZXZpZXc.gif?Expires=1791878781&Signature=MEUCIC0ceYV~Ks5h9AJB0IEBEaVwlvibzqB7n2vLDoiblBCRAiEA~lOS52K9GkbnwPB2nbkNU9ADnefFc6vpkJpKUMls9dc_&Key-Pair-Id=K1K5N5YNBUUMMN)
+---
 
-*Run the program locally to interact with the animation.*
+## The Idea
 
-## Features
+**White Flower Animation** turns a still flower photograph into a calm,
+luminous visual experience. The flower gently breathes, its brightest petals
+create a soft glow, tiny lights rise into the air, and the lower part of the
+image moves like a reflection on water.
 
-- Soft breathing glow effect
+It is a small creative-coding project designed to show how Python can be used to
+create atmospheric visual art—not just scripts and utilities.
 
-- Rippling water reflection
+## Highlights
 
-- Floating light particles from the flower
+- **Breathing light** — a subtle pulse makes the flower feel alive
 
-- Twinkling background sparkles
+- **Luminous petals** — bright parts of the image bloom with a soft glow
 
-- Smooth animated zoom effect
+- **Floating particles** — tiny lights rise from the flower and fade naturally
 
-- Screenshot support
+- **Water reflection** — animated horizontal ripples add depth to the scene
 
-- Custom flower image support
+- **Twinkling atmosphere** — background sparkles create a magical night effect
 
-## Project Files
+- **Gentle camera motion** — a slow zoom adds a cinematic touch
 
-- `White Flower.py` – the main animation program
+- **Custom image support** — use your own flower or nature photograph
 
-- `flower.jpg` – the flower image used by the animation
+- **Screenshot capture** — press `S` to save the current scene
 
-- `white_flower_shot.png` – screenshot created when you press **S**
+## Preview
 
-## Requirements
+<p align="center">
+<img src="assets/white-flower-preview.gif" alt="Animated preview of the White Flower project" width="360">
+</p>
 
-- Python 3.9 or newer
+> Run the project locally to experience the full interactive animation.
 
-- Pygame Community Edition
+## Built With
 
-- NumPy
+| Technology | Purpose |
+| --- | --- |
+| **Python** | Core programming language |
+| **Pygame CE** | Window, animation loop, rendering, and controls |
+| **NumPy** | Fast pixel and particle calculations |
+| **Pillow** | Image loading, resizing, and glow processing |
 
-- Pillow
+## Project Structure
+
+```
+White-Flower/
+├── White-Flower/
+│   ├── White Flower.py       # Main animation program
+│   └── flower.jpg            # Flower image used by the animation
+├── assets/
+│   └── white-flower-preview.gif
+├── LICENSE
+└── README.md
+```
 
 ## Installation
 
-Open a terminal inside the `White-Flower` folder and run:
+Clone the repository and open the project folder:
+
+```bash
+git clone https://github.com/Sarcasticzain/White-Flower.git
+cd White-Flower/White-Flower
+```
+
+Install the required packages:
 
 ```bash
 python -m pip install --upgrade pip
 python -m pip install pygame-ce numpy pillow
 ```
 
-> Use `pygame-ce` instead of `pygame`. It works more reliably with newer Python
-versions, especially on Windows.
+> `pygame-ce` is recommended instead of the older `pygame` package because it
+works more reliably with newer Python versions.
 
-## How to Run
-
-Open a terminal in the folder that contains `White Flower.py`, then run:
+## Run the Animation
 
 ```bash
 python "White Flower.py"
@@ -64,54 +102,51 @@ python "White Flower.py"
 
 ### Controls
 
-- Press **ESC** to close the animation
+| Key | Action |
+| --- | --- |
+| `ESC` | Close the animation |
+| `S` | Save a screenshot as `white_flower_shot.png` |
 
-- Press **S** to save a screenshot
+## Use Your Own Flower
 
-## Use Your Own Flower Image
+You can easily replace the default image with your own photograph:
 
-You can replace the default image with your own flower photograph:
+1. Choose a portrait-oriented flower image.
 
-1. Choose a JPG or PNG flower image. A portrait image with a dark background
-usually gives the best result.
+1. For the strongest glow, use a dark or black background.
 
 1. Rename the image to `flower.jpg`.
 
-1. Place it in the same folder as `White Flower.py`.
+1. Place it next to `White Flower.py`.
 
-1. Replace the existing `flower.jpg` file.
-
-1. Run the program again.
+1. Run the animation again.
 
 For a PNG image, update this line in `White Flower.py`:
 
 ```python
-im = Image.open("flower.jpg").convert("RGB")
+im = Image.open("flower.jpg" ).convert("RGB")
 ```
 
-Change it to:
+to:
 
 ```python
 im = Image.open("flower.png").convert("RGB")
 ```
 
-Bright backgrounds may reduce the glow effect. Dark or black backgrounds make
-the white flower and floating lights stand out more clearly.
+## Make It Your Own
 
-## Customization
+The main visual settings are at the top of `White Flower.py`:
 
-You can adjust these settings near the top of `White Flower.py`:
-
-| Setting | What it changes |
+| Setting | Effect |
 | --- | --- |
-| `IMG_H = 760` | Flower height and window size |
-| `N = 3500` | Number of floating light particles |
-| `WATER_Y0` | Position where the water reflection begins |
-| `0.14 + 0.12 * math.sin(...)` | Strength of the breathing glow |
-| `3.2 * np.sin(...)` | Size of the water ripples |
-| `pygame.display.set_caption(...)` | Animation window title |
+| `IMG_H = 760` | Changes the flower height and window size |
+| `N = 3500` | Controls the number of floating particles |
+| `WATER_Y0` | Controls where the water reflection starts |
+| Glow expression | Controls the breathing light intensity |
+| Ripple expression | Controls the size of the water waves |
+| Window caption | Changes the animation window title |
 
-For a faster animation on a slower computer, reduce these values:
+For smoother performance on a slower computer, try:
 
 ```python
 IMG_H = 600
@@ -122,7 +157,7 @@ N = 1500
 
 ### `ModuleNotFoundError`
 
-Install the required packages again:
+Install the dependencies again:
 
 ```bash
 python -m pip install pygame-ce numpy pillow
@@ -130,28 +165,32 @@ python -m pip install pygame-ce numpy pillow
 
 ### `FileNotFoundError: flower.jpg`
 
-Make sure `flower.jpg` is in the same folder as `White Flower.py`, and run the
-command from that folder.
+Make sure `flower.jpg` is in the same folder as `White Flower.py`, then run the
+program from that folder.
 
-### The animation is choppy
+### The animation is slow or choppy
 
-Lower the image height and particle count:
+Reduce `IMG_H` and `N` in the customization section above.
 
-```python
-IMG_H = 600
-N = 1500
-```
-
-### The window is too tall
+### The window is too large
 
 Reduce `IMG_H` to `600` or `500`.
 
 ## License
 
-The source code in this project is available under the [MIT License](LICENSE).
-You are free to use, copy, modify, and share the code, as long as the license
-notice is included.
+The source code is released under the [MIT License](LICENSE).
 
-The `flower.jpg` image may have separate copyright or usage rules. Only upload
-an image that you created yourself, have permission to use, or downloaded from
-a source that allows redistribution.
+You may use, copy, modify, and share the code, provided that the license notice
+is included. The `flower.jpg` image may have separate copyright or usage rules;
+only use an image that you created, have permission to use, or that allows
+redistribution.
+
+## About
+
+Created by **Sarcasticzain** as a creative Python and Pygame project.
+
+If you like the project, consider giving it a star on GitHub.
+
+<p align="center">
+<a href="https://github.com/Sarcasticzain/White-Flower">View the repository</a>
+</p>
